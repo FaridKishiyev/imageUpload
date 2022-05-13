@@ -35,37 +35,44 @@ uploadInput.addEventListener("change", function () {
 
 uploadArea.addEventListener("dragover", (e) => e.preventDefault());
 uploadArea.addEventListener("drop", (e) => {
-  e.preventDefault();
+   e.preventDefault();
 
   let fileReader = new FileReader();
   fileReader.readAsDataURL(e.dataTransfer.files[0]);
   let fileType = e.dataTransfer.files[0].type;
 
-  for (let index = 0; index < imgArray.length; index++) {
-    if (imgArray[index] != fileReader.result) {
-      tru = 1;
-      console.log("tekrer sekil");
+  fileReader.onload = function () {
+    for (let index = 0; index < imgArray.length; index++) {
+      if (imgArray[index] == fileReader.result) {
+        tru = 1;
+        break
+      }
+      else{
+        tru = 0
+      }
     }
+    if (tru==undefined) {
+      tru=0
+    }
+    if (
+      tru==0 && (
+      fileType == "image/jpeg" ||
+      fileType == "image/png" ||
+      fileType == "image/jpg" )
+    ){
+    galery.innerHTML +=
+      '<div class="col-4 galery-items" ><img src="' +
+      fileReader.result +
+      '" alt=""/><a href="' +
+      fileReader.result +
+      '" download>Download</a></div>';
+    imgArray[count] = fileReader.result;
+    count++;
+  }else {
+    console.log("Yalnız Şəkil.(Təkrar şəkil olmaz!)");
+    console.log(fileType)
+    
   }
-
-  console.log(imgArray);
-  if (
-    fileType == "image/jpeg" ||
-    fileType == "image/png" ||
-    fileType == "image/jpg"
-  ) {
-    fileReader.onload = function () {
-      galery.innerHTML +=
-        '<div class="col-4 galery-items" ><img src="' +
-        fileReader.result +
-        '" alt=""/><a href="' +
-        fileReader.result +
-        '" download>Download</a></div>';
-      imgArray[count] = fileReader.result;
-      count++;
-      console.log(count);
-    };
-  } else {
-    alert("only jpeg");
-  }
+  
+} 
 });
